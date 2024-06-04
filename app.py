@@ -1,4 +1,4 @@
-import pickle
+import joblib
 from sklearn.preprocessing import StandardScaler
 from flask import Flask, request, render_template
 import pandas as pd
@@ -10,8 +10,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Ensure the upload folder exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-
 
 # Initialize the scaler
 scaler = StandardScaler()
@@ -35,7 +33,6 @@ def upload_file():
         return 'No selected file'
     if file:
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        print(file_path)
         file.save(file_path)
         
         # Process the CSV file
@@ -48,21 +45,19 @@ def upload_file():
         print("Processed data type:", type(processed_data))
         print("Processed data shape:", processed_data.shape)
         
-        # Make predictions
-        with open('model_joblib_heart.pkl', 'rb') as model_file:
-            model = pickle.load(model_file)
+        # Load the model using joblib
+        model = joblib.load('model_joblib_heart.pkl')
 
-            # Print the type of the model to ensure it's correctly loaded
-            print("Model type after loading:", type(model))
-            
-            try:
-                predictions = model.predict(processed_data)
-            except AttributeError as e:
-                return f"Model type: {type(model)}, Error: {e}"
+        # Print the type of the model to ensure it's correctly loaded
+        print("Model type after loading:", type(model))
         
-            
-            # Add predictions to the DataFrame
-            data['Prediction'] = predictions
+        try:
+            predictions = model.predict(processed_data)
+        except AttributeError as e:
+            return f"Model type: {type(model)}, Error: {e}"
+        
+        # Add predictions to the DataFrame
+        data['Prediction'] = predictions
         
         # Create a response with the predictions
         response = data.to_html()
