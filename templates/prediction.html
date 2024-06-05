@@ -17,11 +17,9 @@
         }
         .container {
             background: #fff;
-            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-            width: 100%;
+
         }
         h1 {
             text-align: center;
@@ -47,6 +45,19 @@
         td:last-child {
             background-color: #61a8f536; 
             font-weight: bold;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+                overflow-x:auto;
+            }
+            th, td {
+                padding: 8px;
+                font-size: 14px;
+            }
+            h1 {
+                font-size: 20px;
+            }
         }
     </style>
 </head>
