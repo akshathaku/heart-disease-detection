@@ -58,11 +58,13 @@ def upload_file():
         
         # Add predictions to the DataFrame
         data['Prediction'] = predictions
-        
+        data['Prediction'] = data['Prediction'].map({0: 'No Heart Disease', 1: 'Possibility of Heart Disease'})
+    
         # Create a response with the predictions
-        response = data.to_html()
+        prediction_results = data.to_html(classes='table table-striped')
+        prediction_results = prediction_results.replace('<td>', '<td class="prediction">')
         
-        return response
+        return render_template('prediction.html', prediction_results=prediction_results)
 
 if __name__ == '__main__':
     app.run(debug=True)
