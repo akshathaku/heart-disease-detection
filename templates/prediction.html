@@ -32,7 +32,7 @@
             background: #fff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
+            padding: 20px;
         }
         h1 {
             text-align: center;
@@ -59,6 +59,18 @@
             background-color: #61a8f536; 
             font-weight: bold;
         }
+        .download-button {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .download-button a {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
         @media (max-width: 600px) {
             .container {
                 padding: 10px;
@@ -78,6 +90,9 @@
     <div class="container">
         <h1>Prediction Results</h1>
         {{ prediction_results|safe }}
+        <div class="download-button">
+            <a href="{{ url_for('download_file', filename=csv_filename) }}">Download Results</a>
+        </div>
     </div>
 </body>
 </html>

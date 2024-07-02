@@ -1,6 +1,6 @@
 import joblib
 from sklearn.preprocessing import StandardScaler
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, send_file
 import pandas as pd
 import os
 
@@ -60,12 +60,22 @@ def upload_file():
         data['Prediction'] = predictions
         data['Prediction'] = data['Prediction'].map({0: 'No Heart Disease', 1: 'Possibility of Heart Disease'})
     
+        # Save the DataFrame with predictions to a CSV file
+        csv_filename = 'predicted_results.csv'
+        csv_file_path = os.path.join(app.config['UPLOAD_FOLDER'], csv_filename)
+        data.to_csv(csv_file_path, index=False)
+    
         # Create a response with the predictions
         prediction_results = data.to_html(classes='table table-striped')
         prediction_results = prediction_results.replace('<td>', '<td class="prediction">')
         
-        return render_template('prediction.html', prediction_results=prediction_results)
+        return render_template('prediction.html', prediction_results=prediction_results, csv_filename=csv_filename)
+
+@app.route('/download/<filename>')
+def download_file(filename):
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    return send_file(file_path, as_attachment=True)
 
 if __name__ == '__main__':
-    # app.run(debug=True)  Local
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))     #Production mode
+    # app.run(debug=True)  # Local
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))  # Production mode
